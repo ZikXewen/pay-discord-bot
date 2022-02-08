@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 import { DisTube } from "distube";
 import { SpotifyPlugin } from "@distube/spotify";
+import { YtDlpPlugin } from "@distube/yt-dlp";
 import dotenv from "dotenv";
 import { readdirSync } from "fs";
 
@@ -34,8 +35,9 @@ const distube = new DisTube(client, {
   emitNewSongOnly: true,
   leaveOnFinish: true,
   nsfw: true,
-  plugins: [new SpotifyPlugin()],
+  plugins: [new SpotifyPlugin(), new YtDlpPlugin()],
   youtubeCookie: process.env.COOKIE,
+  youtubeDL: false,
 });
 
 client
