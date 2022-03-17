@@ -3,29 +3,31 @@
   "type": "module",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "tsc --build && node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc --build",
     "lint": "eslint src"
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
-    "@discordjs/voice": "^0.7.5",
+    "@discordjs/voice": "^0.8.0",
     "@distube/spotify": "^1.2.1",
-    "@distube/yt-dlp": "^0.0.2",
-    "axios": "^0.25.0",
+    "@distube/yt-dlp": "^1.0.2",
+    "axios": "^0.26.1",
     "discord.js": "^13.6.0",
-    "discord.js-akinator": "^3.3.3",
-    "distube": "^3.3.1",
+    "discord.js-akinator": "^3.4.2",
+    "distube": "^3.3.2",
     "dotenv": "^16.0.0",
     "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.9"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
-    "@typescript-eslint/eslint-plugin": "^5.11.0",
-    "@typescript-eslint/parser": "^5.11.0",
-    "eslint": "^8.8.0",
-    "ts-node": "^10.5.0",
-    "typescript": "^4.5.5"
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
   },
   "engines": {
     "node": "16.x"
