@@ -1,51 +1,60 @@
-import axios from "axios";
-import { Command, HFResponse, WSResponse } from "../types.js";
-import { logger, toEmbed } from "../utils.js";
+import { SlashCommandBuilder } from '@discordjs/builders'
+import fetch from 'node-fetch'
+import { Command, HFResponse, WSResponse } from '../types.js'
+import { toEmbed } from '../utils.js'
 
-export default {
-  name: "Salim",
-  cmds: ["salim", "sl"],
-  run: (distube, message, args) => {
-    logger(
-      "info",
-      `${message.member.user.tag} used Salim in ${message.guild}.`
-    );
-    if (args[0]) {
-      axios
-        .post<HFResponse>(
-          "https://api-inference.huggingface.co/models/tupleblog/salim-classifier",
-          {
-            inputs:
-              args.join(" ") + (args.join(" ").length < 50 ? "<pad>" : ""),
+const salim: Command = {
+  data: new SlashCommandBuilder()
+    .setName('salim')
+    .setDescription('Generate or rate a salim quote.')
+    .addStringOption((option) =>
+      option
+        .setName('quote')
+        .setDescription('Salim quote to rate. Leave blank to generate one.')
+        .setRequired(false)
+    ),
+  exec: async (interaction) => {
+    await interaction.deferReply()
+    const quote = interaction.options.getString('quote')
+    if (quote) {
+      fetch(
+        'https://api-inference.huggingface.co/models/tupleblog/salim-classifier',
+        {
+          method: 'post',
+          headers: {
+            Authorization: 'Bearer ' + process.env.HF_KEY,
           },
-          {
-            headers: {
-              Authorization: "Bearer " + process.env.HF_KEY,
-            },
-          }
-        )
-        .then(({ data }) => {
-          const score = data[0][1].score * 100;
-          message.channel.send(
+          body: JSON.stringify({
+            inputs: quote + (quote.length < 50 ? '<pad>' : ''),
+          }),
+        }
+      )
+        .then(async (response) => {
+          const data = (await response.json()) as HFResponse
+          const score = data[0][1].score * 100
+          interaction.editReply(
             `This quote is ${score.toFixed(2)}% Salim.` +
-              (score > 80 ? " :cold_face::cold_face:" : "")
-          );
-        })
-        .catch((err) => {
-          logger("error", err);
-          message.channel.send(
-            toEmbed("Error Salim classification request :frowning:", "RED")
-          );
-        });
-    } else {
-      axios
-        .get<WSResponse>("https://watasalim.vercel.app/api/quotes/random")
-        .then(({ data }) => message.channel.send(data.quote.body))
-        .catch(() =>
-          message.channel.send(
-            toEmbed("Error fetching Salim quotes :frowning:", "RED")
+              (score > 80 ? ' :cold_face::cold_face:' : '')
           )
-        );
+        })
+        .catch(() => {
+          interaction.editReply(
+            toEmbed('Error Salim classification request :frowning:', 'RED')
+          )
+        })
+    } else {
+      fetch('https://watasalim.vercel.app/api/quotes/random')
+        .then(async (response) => {
+          const data = (await response.json()) as WSResponse
+          interaction.editReply(data.quote.body)
+        })
+        .catch(() =>
+          interaction.editReply(
+            toEmbed('Error fetching Salim quotes :frowning:', 'RED')
+          )
+        )
     }
   },
-} as Command;
+}
+
+export default salim

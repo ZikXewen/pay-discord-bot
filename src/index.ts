@@ -1,125 +1,101 @@
-import Discord from "discord.js";
-import { DisTube } from "distube";
-import { SpotifyPlugin } from "@distube/spotify";
-import { YtDlpPlugin } from "@distube/yt-dlp";
-import dotenv from "dotenv";
-import { readdirSync } from "fs";
+import Discord, {
+  Collection,
+  GuildMember,
+  GuildTextBasedChannel,
+} from 'discord.js'
+import { DisTube } from 'distube'
+import { SpotifyPlugin } from '@distube/spotify'
+import { YtDlpPlugin } from '@distube/yt-dlp'
+import dotenv from 'dotenv'
 
-import { logger, toEmbed } from "./utils.js";
-import { Command } from "./types.js";
+import { toEmbed } from './utils.js'
+import commands from './commands/index.js'
 
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config()
 
-dotenv.config();
-const commands: Command[] = await Promise.all(
-  readdirSync(__dirname + "/commands/").map(
-    async (file) =>
-      (
-        await import(`./commands/${file.slice(0, -3)}.js`)
-      ).default as Command
-  )
-);
-
-const prefix = "??";
 const client = new Discord.Client({
   intents: [
     Discord.Intents.FLAGS.GUILDS,
     Discord.Intents.FLAGS.GUILD_VOICE_STATES,
     Discord.Intents.FLAGS.GUILD_MESSAGES,
   ],
-});
-const distube = new DisTube(client, {
-  searchSongs: 10,
+})
+client.distube = new DisTube(client, {
   emitNewSongOnly: true,
   leaveOnFinish: true,
   nsfw: true,
   plugins: [new SpotifyPlugin(), new YtDlpPlugin()],
   youtubeCookie: process.env.COOKIE,
   youtubeDL: false,
-});
+})
+client.commands = new Collection()
+commands.forEach((command) => {
+  client.commands.set(command.data.name, command)
+})
 
 client
-  .on("ready", () => {
-    console.log(`${client.user.tag} logged in. Ready to run!`);
-    client.user.setActivity({ type: "COMPETING", name: "??help" });
+  .on('ready', () => {
+    console.log(`${client.user.tag} logged in. Ready to run!`)
+    client.user.setActivity({ type: 'LISTENING', name: 'itself' })
   })
-  .on("messageCreate", async (message) => {
-    if (message.author.bot || !message.content.startsWith(prefix)) return;
-    const args = message.content.slice(prefix.length).trim().split(/\s+/g);
-    const command = args.shift();
-    commands.forEach(({ cmds, run }) => {
-      if (cmds.includes(command)) run(distube, message, args);
-    });
-    if (["help", "h", "commands", "cmds"].includes(command)) {
-      message.channel.send({
-        embeds: [
-          new Discord.MessageEmbed({
-            title: "Commands",
-            description: commands
-              .map(({ name, cmds }) => `**${name}**: ${cmds.join(", ")}`)
-              .join("\n"),
-          }),
-        ],
-      });
+  .on('interactionCreate', async (interaction) => {
+    if (interaction.isCommand()) {
+      const command = client.commands.get(interaction.commandName)
+      if (!command) return
+      try {
+        await command.exec(interaction)
+      } catch (err) {
+        console.error(err)
+        interaction.channel.send('Command Error')
+      }
+    } else if (interaction.isSelectMenu()) {
+      if (interaction.customId === 'track') {
+        interaction.update({
+          components: [],
+        })
+        interaction.client.distube
+          .play(
+            (interaction.member as GuildMember).voice.channel,
+            interaction.values[0],
+            {
+              member: interaction.member as GuildMember,
+              textChannel: interaction.channel as GuildTextBasedChannel,
+            }
+          )
+          .catch(({ errorCode }) => {
+            if (errorCode == 'NOT_IN_VOICE')
+              interaction.editReply(
+                toEmbed(
+                  'Please join a voice channel first. :slight_smile:',
+                  'RED'
+                )
+              )
+          })
+      }
     }
-  });
-
-distube
-  .on("addSong", (queue, song) => {
-    logger(
-      "info",
-      `${song.member.user.tag} added ${song.name} to ${song.member.guild}.`
-    );
-    queue.textChannel.send(
-      toEmbed(`Added [**${song.name}**](${song.url}) to queue.`, "GREEN")
-    );
   })
-  .on("playSong", (queue, song) => {
+
+client.distube
+  .on('addSong', (queue, song) => {
+    queue.textChannel.send(
+      toEmbed(
+        `**${song.user.tag}** added [**${song.name}**](${song.url}) to queue.`,
+        'GREEN'
+      )
+    )
+  })
+  .on('playSong', (queue, song) => {
     queue.textChannel.send(
       toEmbed(
         `Started Playing: [**${song.name}**](${song.url}) (${song.formattedDuration}) - Requested by ${song.user.tag}`
       )
-    );
+    )
   })
-  .on("disconnect", (queue) => {
-    queue.textChannel.send(toEmbed("Leaving the Voice Channel..."));
+  .on('disconnect', (queue) => {
+    queue.textChannel?.send(toEmbed('Leaving the Voice Channel...'))
   })
-  .on("searchCancel", (message) => {
-    message.channel.send(toEmbed("Search Canceled.", "RED"));
+  .on('error', (channel, error) => {
+    channel.send(toEmbed(error.toString().slice(0, 1999), 'RED'))
   })
-  .on("searchDone", () => {
-    // do nothing.
-  })
-  .on("searchNoResult", (message) => {
-    message.channel.send(toEmbed("Found Nothing...", "RED"));
-  })
-  .on("searchInvalidAnswer", (message) => {
-    message.channel.send(toEmbed("Invalid Answer. Search Canceled.", "RED"));
-  })
-  .on("searchResult", (message, results) => {
-    message.channel.send({
-      embeds: [
-        new Discord.MessageEmbed({
-          title: "Search Results",
-          description: results
-            .map(
-              (result, key) =>
-                `${key + 1}: [**${result.name}**](${result.url}) (${
-                  result.formattedDuration
-                })`
-            )
-            .join("\n"),
-          footer: {
-            text: "Type (1-10) to choose songs, or type other texts to cancel.",
-          },
-        }),
-      ],
-    });
-  })
-  .on("error", (channel, error) => {
-    channel.send(toEmbed(error.toString().slice(0, 1999), "RED"));
-  });
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN)

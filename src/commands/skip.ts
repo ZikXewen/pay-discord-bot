@@ -1,14 +1,21 @@
-import { Command } from "../types.js";
-import { toEmbed } from "../utils.js";
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { Command } from '../types.js'
+import { toEmbed } from '../utils.js'
 
-export default {
-  name: "Skip",
-  cmds: ["skip", "s"],
-  run: (distube, message) => {
-    const queue = distube.getQueue(message);
-    if (!queue)
-      return message.channel.send(toEmbed("No songs... :slight_smile:", "RED"));
-    if (queue.songs.length > 1) distube.skip(message);
-    else distube.stop(message);
+const skip: Command = {
+  data: new SlashCommandBuilder()
+    .setName('skip')
+    .setDescription('Skip current track.'),
+  exec: async (interaction) => {
+    const queue = interaction.client.distube.getQueue(interaction)
+    if (!queue) {
+      interaction.reply(toEmbed('No songs... :slight_smile:', 'RED'))
+      return
+    }
+    if (queue.songs.length > 1) interaction.client.distube.skip(interaction)
+    else interaction.client.distube.stop(interaction)
+    interaction.reply(toEmbed('Skipping current track...'))
   },
-} as Command;
+}
+
+export default skip

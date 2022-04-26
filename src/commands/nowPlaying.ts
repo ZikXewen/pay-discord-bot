@@ -1,20 +1,24 @@
-import { Command } from "../types.js";
-import { toEmbed } from "../utils.js";
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { Command } from '../types.js'
+import { toEmbed } from '../utils.js'
 
-export default {
-  name: "Now Playing",
-  cmds: ["nowplaying", "np", "now"],
-  run: (distube, message) => {
-    const queue = distube.getQueue(message);
-    if (!queue)
-      return message.channel.send(
-        toEmbed("No song is playing... :slight_smile:", "RED")
-      );
-    const song = queue.songs[0];
-    message.channel.send(
+const nowPlaying: Command = {
+  data: new SlashCommandBuilder()
+    .setName('nowplaying')
+    .setDescription('Get the name of the current track.'),
+  exec: async (interaction) => {
+    const queue = interaction.client.distube.getQueue(interaction)
+    if (!queue) {
+      interaction.reply(toEmbed('No song is playing... :slight_smile:', 'RED'))
+      return
+    }
+    const { name, url, formattedDuration, user } = queue.songs[0]
+    interaction.reply(
       toEmbed(
-        `Now Playing: [**${song.name}**](${song.url}) (${song.formattedDuration}) - Requested by ${song.user.tag}`
+        `Now Playing: [**${name}**](${url}) (${formattedDuration}) - Requested by ${user.tag}`
       )
-    );
+    )
   },
-} as Command;
+}
+
+export default nowPlaying

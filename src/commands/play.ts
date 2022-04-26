@@ -1,25 +1,50 @@
-import { toEmbed } from "../utils.js";
-import { Command } from "../types.js";
-import { GuildTextBasedChannel } from "discord.js";
+import { Command } from '../types.js'
+import { MessageActionRow, MessageEmbed, MessageSelectMenu } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
 
-export default {
-  name: "Play",
-  cmds: ["play", "p"],
-  run: (distube, message, args) => {
-    if (args.length === 0) {
-      message.channel.send(toEmbed("Please Enter URL or Search Terms.", "RED"));
-    }
-    distube
-      .play(message.member.voice?.channel, args.join(" "), {
-        member: message.member,
-        textChannel: message.channel as GuildTextBasedChannel,
-        message,
-      })
-      .catch(({ errorCode }) => {
-        if (errorCode == "NOT_IN_VOICE")
-          message.channel.send(
-            toEmbed("Please join a voice channel first. :slight_smile:", "RED")
-          );
-      });
+const play: Command = {
+  data: new SlashCommandBuilder()
+    .setName('play')
+    .setDescription('Play a track from name/url.')
+    .addStringOption((option) =>
+      option
+        .setName('track')
+        .setDescription('Name or URL of the track.')
+        .setRequired(true)
+    ),
+  exec: async (interaction) => {
+    await interaction.deferReply({ ephemeral: true })
+    const track = interaction.options.getString('track')
+    // if (track.noturl()) {
+    const results = await interaction.client.distube.search(track)
+    interaction.editReply({
+      embeds: [
+        new MessageEmbed({
+          title: 'Search Results',
+          description: results
+            .map(
+              ({ name, url, formattedDuration }, key) =>
+                `${key + 1}: [**${name}**](${url}) (${formattedDuration})`
+            )
+            .join('\n'),
+        }),
+      ],
+      components: [
+        new MessageActionRow({
+          components: [
+            new MessageSelectMenu({
+              customId: 'track',
+              placeholder: 'Select Track.',
+              options: results.map(({ name, url }, key) => ({
+                label: `${key + 1}: ${name}`,
+                value: url,
+              })),
+            }),
+          ],
+        }),
+      ],
+    })
   },
-} as Command;
+}
+
+export default play

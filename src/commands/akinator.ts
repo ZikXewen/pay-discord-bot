@@ -1,14 +1,16 @@
-import akinator from "discord.js-akinator";
-import { Command } from "../types.js";
-import { logger } from "../utils.js";
-export default {
-  name: "Akinator",
-  cmds: ["akinator", "aki"],
-  run: (distube, message) => {
-    logger(
-      "info",
-      `${message.member.user.tag} used Akinator in ${message.guild}.`
-    );
-    akinator(message, { useButtons: true, embedColor: "GREY" });
+import { SlashCommandBuilder } from '@discordjs/builders'
+import aki from 'discord.js-akinator'
+import { Command } from '../types.js'
+import { toEmbed } from '../utils.js'
+
+const akinator: Command = {
+  data: new SlashCommandBuilder()
+    .setName('akinator')
+    .setDescription('Start an Akinator game.'),
+  exec: async (interaction) => {
+    interaction.reply({ ...toEmbed('Starting game...'), ephemeral: true })
+    aki(interaction, { useButtons: true, embedColor: 'GREY' })
   },
-} as Command;
+}
+
+export default akinator
