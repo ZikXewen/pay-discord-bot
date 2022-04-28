@@ -8,7 +8,7 @@ import { SpotifyPlugin } from '@distube/spotify'
 import { YtDlpPlugin } from '@distube/yt-dlp'
 import dotenv from 'dotenv'
 
-import { toEmbed } from './utils.js'
+import { customPlay, toEmbed } from './utils.js'
 import commands from './commands/index.js'
 import mongoose from 'mongoose'
 
@@ -58,18 +58,7 @@ client
         await interaction.update({
           components: [],
         })
-        const voiceChannel = (interaction.member as GuildMember).voice.channel
-        if (voiceChannel)
-          interaction.client.distube
-            .play(voiceChannel, interaction.values[0], {
-              member: interaction.member as GuildMember,
-              textChannel: interaction.channel as GuildTextBasedChannel,
-            })
-            .catch()
-        else
-          interaction.editReply(
-            toEmbed('Please join a voice channel first. :slight_smile:', 'RED')
-          )
+        customPlay(interaction, interaction.values[0])
       }
     }
   })

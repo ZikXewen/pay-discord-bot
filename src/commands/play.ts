@@ -1,6 +1,13 @@
 import { Command } from '../types.js'
-import { MessageActionRow, MessageEmbed, MessageSelectMenu } from 'discord.js'
+import {
+  GuildMember,
+  MessageActionRow,
+  MessageEmbed,
+  MessageSelectMenu,
+} from 'discord.js'
 import { SlashCommandBuilder } from '@discordjs/builders'
+import { isURL } from 'distube'
+import { customPlay } from '../utils.js'
 
 const play: Command = {
   data: new SlashCommandBuilder()
@@ -15,7 +22,9 @@ const play: Command = {
   exec: async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     const track = interaction.options.getString('track')
-    // if (track.noturl()) {
+
+    if (isURL(track)) return customPlay(interaction, track)
+
     const results = await interaction.client.distube.search(track)
     interaction.editReply({
       embeds: [
@@ -36,7 +45,7 @@ const play: Command = {
               customId: 'track',
               placeholder: 'Select Track.',
               options: results.map(({ name, url }, key) => ({
-                label: `${key + 1}: ${name}`,
+                label: `${key + 1}: ${name}`.slice(0, 99),
                 value: url,
               })),
             }),
