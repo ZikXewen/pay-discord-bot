@@ -10,8 +10,13 @@ import dotenv from 'dotenv'
 
 import { toEmbed } from './utils.js'
 import commands from './commands/index.js'
+import mongoose from 'mongoose'
 
 dotenv.config()
+
+await mongoose.connect(process.env.DB_URL, {
+  bufferCommands: false,
+})
 
 const client = new Discord.Client({
   intents: [
@@ -50,27 +55,21 @@ client
       }
     } else if (interaction.isSelectMenu()) {
       if (interaction.customId === 'track') {
-        interaction.update({
+        await interaction.update({
           components: [],
         })
-        interaction.client.distube
-          .play(
-            (interaction.member as GuildMember).voice.channel,
-            interaction.values[0],
-            {
+        const voiceChannel = (interaction.member as GuildMember).voice.channel
+        if (voiceChannel)
+          interaction.client.distube
+            .play(voiceChannel, interaction.values[0], {
               member: interaction.member as GuildMember,
               textChannel: interaction.channel as GuildTextBasedChannel,
-            }
+            })
+            .catch()
+        else
+          interaction.editReply(
+            toEmbed('Please join a voice channel first. :slight_smile:', 'RED')
           )
-          .catch(({ errorCode }) => {
-            if (errorCode == 'NOT_IN_VOICE')
-              interaction.editReply(
-                toEmbed(
-                  'Please join a voice channel first. :slight_smile:',
-                  'RED'
-                )
-              )
-          })
       }
     }
   })

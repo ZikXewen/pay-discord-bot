@@ -48,3 +48,13 @@ export type WSResponse = {
     body: string
   }
 }
+
+export type ValAPIResponse = {
+  data: [Skin]
+}
+
+export type Skin = {
+  levels: [{ uuid: string; displayIcon: string }]
+  displayName: string
+  displayIcon: string
+}

@@ -8,6 +8,7 @@ import queue from './queue.js'
 import salim from './salim.js'
 import skip from './skip.js'
 import stop from './stop.js'
+import valStore from './valStore.js'
 
 export default [
   akinator,
@@ -20,4 +21,5 @@ export default [
   salim,
   skip,
   stop,
+  valStore,
 ]
