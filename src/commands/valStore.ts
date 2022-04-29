@@ -56,10 +56,10 @@ const valStore: Command = {
           }
         )
 
+        // not used but still works
         const ssidCookie = reauth.headers['set-cookie'].find((elem) =>
           /^ssid/.test(elem)
         )
-
         const access_token = new URL(
           reauth.data.response.parameters.uri
         ).searchParams.get('access_token')

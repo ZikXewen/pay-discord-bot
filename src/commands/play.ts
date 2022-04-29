@@ -1,10 +1,5 @@
 import { Command } from '../types.js'
-import {
-  GuildMember,
-  MessageActionRow,
-  MessageEmbed,
-  MessageSelectMenu,
-} from 'discord.js'
+import { MessageActionRow, MessageEmbed, MessageSelectMenu } from 'discord.js'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { isURL } from 'distube'
 import { customPlay } from '../utils.js'

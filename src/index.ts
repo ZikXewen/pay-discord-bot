@@ -1,8 +1,4 @@
-import Discord, {
-  Collection,
-  GuildMember,
-  GuildTextBasedChannel,
-} from 'discord.js'
+import Discord, { Collection } from 'discord.js'
 import { DisTube } from 'distube'
 import { SpotifyPlugin } from '@distube/spotify'
 import { YtDlpPlugin } from '@distube/yt-dlp'
