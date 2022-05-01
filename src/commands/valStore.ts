@@ -17,6 +17,39 @@ const AuthModel =
     })
   )
 
+const tiers = [
+  {
+    uuid: '0cebb8be-46d7-c12a-d306-e9907bfc5a25',
+    devName: 'Deluxe',
+    displayIcon:
+      'https://media.valorant-api.com/contenttiers/0cebb8be-46d7-c12a-d306-e9907bfc5a25/displayicon.png',
+  },
+  {
+    uuid: 'e046854e-406c-37f4-6607-19a9ba8426fc',
+    devName: 'Exclusive',
+    displayIcon:
+      'https://media.valorant-api.com/contenttiers/e046854e-406c-37f4-6607-19a9ba8426fc/displayicon.png',
+  },
+  {
+    uuid: '60bca009-4182-7998-dee7-b8a2558dc369',
+    devName: 'Premium',
+    displayIcon:
+      'https://media.valorant-api.com/contenttiers/60bca009-4182-7998-dee7-b8a2558dc369/displayicon.png',
+  },
+  {
+    uuid: '12683d76-48d7-84a3-4e09-6985794f0445',
+    devName: 'Select',
+    displayIcon:
+      'https://media.valorant-api.com/contenttiers/12683d76-48d7-84a3-4e09-6985794f0445/displayicon.png',
+  },
+  {
+    uuid: '411e4a55-4e59-7757-41f0-86a53f101bb5',
+    devName: 'Ultra',
+    displayIcon:
+      'https://media.valorant-api.com/contenttiers/411e4a55-4e59-7757-41f0-86a53f101bb5/displayicon.png',
+  },
+]
+
 const valStore: Command = {
   data: new SlashCommandBuilder()
     .setName('val_store')
@@ -103,15 +136,18 @@ const valStore: Command = {
         interaction.editReply({
           embeds: skins.data
             .filter((skin) => store.includes(skin.levels[0].uuid))
-            .map(
-              (skin) =>
-                new MessageEmbed({
-                  title: skin.displayName,
-                  image: {
-                    url: skin.displayIcon || skin.levels.at(-1).displayIcon,
-                  },
-                })
-            ),
+            .map((skin) => {
+              const tier = tiers.find(
+                (tier) => tier.uuid === skin.contentTierUuid
+              )
+              return new MessageEmbed({
+                author: { name: tier.devName, iconURL: tier.displayIcon },
+                title: skin.displayName,
+                image: {
+                  url: skin.displayIcon || skin.levels[0].displayIcon,
+                },
+              })
+            }),
         })
       } catch (err) {
         console.error(err)

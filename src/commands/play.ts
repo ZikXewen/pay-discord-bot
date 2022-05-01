@@ -18,8 +18,10 @@ const play: Command = {
     await interaction.deferReply({ ephemeral: true })
     const track = interaction.options.getString('track')
 
-    if (isURL(track)) return customPlay(interaction, track)
-
+    if (isURL(track)) {
+      await interaction.deleteReply()
+      return customPlay(interaction, track)
+    }
     const results = await interaction.client.distube.search(track)
     interaction.editReply({
       embeds: [

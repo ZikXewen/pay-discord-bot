@@ -57,4 +57,5 @@ export type Skin = {
   levels: [{ uuid: string; displayIcon: string }]
   displayName: string
   displayIcon: string
+  contentTierUuid: string
 }
