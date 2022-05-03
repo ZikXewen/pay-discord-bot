@@ -151,8 +151,12 @@ const valStore: Command = {
         })
       } catch (err) {
         console.error(err)
+        AuthModel.findByIdAndDelete(auth._id)
         interaction.editReply(
-          toEmbed('Error fetching the shop. :frowning:', 'RED')
+          toEmbed(
+            'Error fetching the shop. If this happens regularly, contact the owner. :frowning:',
+            'RED'
+          )
         )
       }
     } else
