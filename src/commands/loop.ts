@@ -2,18 +2,24 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { Command } from '../types.js'
 import { toEmbed } from '../utils.js'
 
+const modes = ['None', 'Single', 'Queue']
+
 const loop: Command = {
   data: new SlashCommandBuilder()
     .setName('loop')
-    .setDescription('Change track looping mode.'),
+    .setDescription('Change track looping mode.')
+    .addIntegerOption((option) =>
+      option
+        .setName('mode')
+        .setDescription('Looping mode to switch to')
+        .setRequired(true)
+        .addChoices(...modes.map((mode, idx) => ({ name: mode, value: idx })))
+    ),
   exec: async (interaction) => {
     if (interaction.client.distube.getQueue(interaction)) {
-      const mode = interaction.client.distube.setRepeatMode(interaction)
-      interaction.reply(
-        toEmbed(
-          'Repeat mode set to **' + ['None', 'Single', 'Queue'][mode] + '**'
-        )
-      )
+      const mode = interaction.options.getInteger('mode')
+      interaction.client.distube.setRepeatMode(interaction, mode)
+      interaction.reply(toEmbed('Repeat mode set to **' + modes[mode] + '**'))
     } else {
       interaction.reply(toEmbed('No songs... :slight_smile:', 'RED'))
     }
