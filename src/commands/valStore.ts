@@ -151,10 +151,10 @@ const valStore: Command = {
         })
       } catch (err) {
         console.error(err)
-        AuthModel.findByIdAndDelete(auth._id)
+        await AuthModel.findByIdAndDelete(auth._id)
         interaction.editReply(
           toEmbed(
-            'Error fetching the shop. If this happens regularly, contact the owner. :frowning:',
+            'Error fetching the shop. Token might have expired. Please log-in again :frowning:',
             'RED'
           )
         )
