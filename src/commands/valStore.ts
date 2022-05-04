@@ -152,12 +152,23 @@ const valStore: Command = {
       } catch (err) {
         console.error(err)
         await AuthModel.findByIdAndDelete(auth._id)
-        interaction.editReply(
-          toEmbed(
+        interaction.editReply({
+          ...toEmbed(
             'Error fetching the shop. Token might have expired. Please log-in again :frowning:',
             'RED'
-          )
-        )
+          ),
+          components: [
+            new MessageActionRow({
+              components: [
+                new MessageButton({
+                  style: 'LINK',
+                  label: `Login (only for ${interaction.user.tag})`,
+                  url: `https://pay-discord-bot-auth-endpoint.vercel.app/?id=${interaction.user.id}`,
+                }),
+              ],
+            }),
+          ],
+        })
       }
     } else
       interaction.editReply({
