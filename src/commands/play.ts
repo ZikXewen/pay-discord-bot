@@ -2,7 +2,7 @@ import { Command } from '../types.js'
 import { MessageActionRow, MessageEmbed, MessageSelectMenu } from 'discord.js'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { isURL } from 'distube'
-import { customPlay } from '../utils.js'
+import { customPlay, toEmbed } from '../utils.js'
 
 const play: Command = {
   data: new SlashCommandBuilder()
@@ -19,7 +19,7 @@ const play: Command = {
     const track = interaction.options.getString('track')
 
     if (isURL(track)) {
-      await interaction.deleteReply()
+      await interaction.editReply(toEmbed('Added to queue'))
       return customPlay(interaction, track)
     }
     const results = await interaction.client.distube.search(track)
