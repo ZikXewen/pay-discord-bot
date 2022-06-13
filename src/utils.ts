@@ -4,14 +4,10 @@ import {
   GuildMember,
   GuildTextBasedChannel,
   MessageEmbed,
-  MessageOptions,
   SelectMenuInteraction,
 } from 'discord.js'
 
-export const toEmbed = (
-  desc: string,
-  color?: ColorResolvable
-): MessageOptions => ({
+export const toEmbed = (desc: string, color?: ColorResolvable) => ({
   embeds: [new MessageEmbed({ description: desc, color: color })],
 })
 

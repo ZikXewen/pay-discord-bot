@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
+import { MessageEmbed } from 'discord.js'
 import { Command } from '../types.js'
 import { toEmbed } from '../utils.js'
 
@@ -17,9 +18,16 @@ const roll: Command = {
     const max = interaction.options.getInteger('max') || 6
     if (min > max) interaction.reply(toEmbed('Invalid Range!', 'RED'))
     else
-      interaction.reply(
-        toEmbed(`:game_die: Rolled ${Math.ceil(Math.random() * 6)}`)
-      )
+      interaction.reply({
+        embeds: [
+          new MessageEmbed({
+            title: `:game_die: Got ${
+              min + Math.floor(Math.random() * (max - min + 1))
+            }.`,
+            footer: { text: `Rolled from ${min} to ${max}` },
+          }),
+        ],
+      })
   },
 }
 
