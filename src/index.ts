@@ -79,6 +79,7 @@ client.distube
     queue.textChannel?.send(toEmbed('Leaving the Voice Channel...'))
   })
   .on('error', (channel, error) => {
+    console.error(error)
     channel.send(toEmbed(error.toString().slice(0, 1999), 'RED'))
   })
 
