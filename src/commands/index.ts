@@ -9,7 +9,7 @@ import roll from './roll.js'
 import salim from './salim.js'
 import skip from './skip.js'
 import stop from './stop.js'
-import valStore from './valStore.js'
+import valorant from './valorant.js'
 
 export default [
   akinator,
@@ -23,5 +23,5 @@ export default [
   salim,
   skip,
   stop,
-  valStore,
+  valorant,
 ]

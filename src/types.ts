@@ -49,10 +49,6 @@ export type WSResponse = {
   }
 }
 
-export type ValAPIResponse = {
-  data: [Skin]
-}
-
 export type Skin = {
   levels: [{ uuid: string; displayIcon: string }]
   displayName: string
