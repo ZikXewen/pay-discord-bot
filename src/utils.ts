@@ -8,7 +8,7 @@ import {
 } from 'discord.js'
 
 export const toEmbed = (desc: string, color?: ColorResolvable) => ({
-  embeds: [new MessageEmbed({ description: desc, color: color })],
+  embeds: [new MessageEmbed({ description: desc, color })],
 })
 
 export const customPlay = (

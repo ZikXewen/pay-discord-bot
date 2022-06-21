@@ -53,11 +53,31 @@ const tiers = [
 const valStore: Command = {
   data: new SlashCommandBuilder()
     .setName('val_store')
-    .setDescription('Check your daily Valorant offers.'),
+    .setDescription('Check your daily Valorant offers.')
+    .addStringOption((option) =>
+      option
+        .setName('options')
+        .setDescription('Other options (Not required)')
+        .setRequired(false)
+        .addChoices({ name: 'Unbind Riot Account', value: 'logout' })
+    ),
   exec: async (interaction) => {
     await interaction.deferReply()
-    const auth = await AuthModel.findById(interaction.user.id)
 
+    if (interaction.options.getString('options') === 'logout') {
+      try {
+        await AuthModel.findByIdAndDelete(interaction.user.id)
+        interaction.editReply(toEmbed('Unbound successfully.'))
+      } catch (error) {
+        interaction.editReply(
+          toEmbed('Error occurred while attempting to unbind account.', 'RED')
+        )
+        console.error(error)
+      }
+      return
+    }
+
+    const auth = await AuthModel.findById(interaction.user.id)
     if (auth) {
       try {
         const reauth = await axios.post(
