@@ -70,11 +70,6 @@ const agents = [
   },
   {
     name: 'Sova',
-    uuid: 'ded3520f-4264-bfed-162d-b080e2abccf9',
-    role: undefined,
-  },
-  {
-    name: 'Sova',
     uuid: '320b2a48-4d9b-a075-30f1-1f93a9b638fa',
     role: 'Initiator',
   },
