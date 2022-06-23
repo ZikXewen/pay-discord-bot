@@ -139,6 +139,7 @@ const maps = [
   { name: 'Icebox', uuid: 'e2ad5c54-4114-a870-9641-8ea21279579a' },
   { name: 'The Range', uuid: 'ee613ee9-28b7-4beb-9666-08db13bb2244' },
   { name: 'Haven', uuid: '2bee0dc9-4ffe-519b-1cbd-7fbe763a6047' },
+  { name: 'Pearl', uuid: 'fd267378-4d1d-484f-ff52-77821ed10dc2' },
 ]
 
 const valorant: Command = {
