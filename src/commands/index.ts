@@ -8,6 +8,7 @@ import queue from './queue.js'
 import roll from './roll.js'
 import salim from './salim.js'
 import skip from './skip.js'
+import skoy from './skoy.js'
 import stop from './stop.js'
 import valorant from './valorant.js'
 
@@ -24,4 +25,5 @@ export default [
   skip,
   stop,
   valorant,
+  skoy,
 ]

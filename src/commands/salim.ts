@@ -33,8 +33,11 @@ const salim: Command = {
         ).data
         const score = data[0][1].score * 100
         interaction.editReply(
-          `This quote is ${score.toFixed(2)}% Salim.` +
-            (score > 80 ? ' :cold_face::cold_face:' : '')
+          toEmbed(
+            `"${quote}" is ${score.toFixed(2)}% Salim. ${
+              score > 80 ? ' :cold_face::cold_face:' : ' :fist::pensive:'
+            }`
+          )
         )
       } catch (err) {
         interaction.editReply(

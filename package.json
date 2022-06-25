@@ -4,7 +4,8 @@
   "license": "mit",
   "scripts": {
     "start": "ts-node-esm src/index.ts",
-    "register": "ts-node-esm src/registry.ts"
+    "register": "ts-node-esm src/registry.ts",
+    "postinstall": "npm run register"
   },
   "dependencies": {
     "@discordjs/builders": "^0.15.0",
@@ -15,14 +16,15 @@
     "@distube/yt-dlp": "^1.0.2",
     "@types/node": "^18.0.0",
     "axios": "^0.27.2",
-    "discord-api-types": "^0.34.0",
-    "discord.js": "^13.8.0",
+    "discord-api-types": "^0.35.0",
+    "discord.js": "^13.8.1",
     "discord.js-akinator": "^3.4.5",
     "distube": "^3.3.4",
     "dotenv": "^16.0.1",
     "https": "^1.0.0",
     "libsodium-wrappers": "^0.7.10",
     "mongoose": "^6.4.0",
+    "skoy": "^0.3.2",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.4"
   },
