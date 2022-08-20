@@ -1,6 +1,6 @@
 import { Colors, SlashCommandBuilder } from 'discord.js'
 import { Command } from '../types.js'
-import { toEmbed } from '../utils.js'
+import { toEmbed, trackEmbed } from '../utils.js'
 
 const nowPlaying: Command = {
   data: new SlashCommandBuilder()
@@ -14,12 +14,7 @@ const nowPlaying: Command = {
       )
       return
     }
-    const { name, url, formattedDuration, user } = queue.songs[0]
-    interaction.reply(
-      toEmbed(
-        `Now Playing: [**${name}**](${url}) (${formattedDuration}) - Requested by ${user.tag}`
-      )
-    )
+    interaction.reply(trackEmbed('Now Playing', queue.songs[0]))
   },
 }
 

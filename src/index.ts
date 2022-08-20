@@ -11,7 +11,7 @@ import { SpotifyPlugin } from '@distube/spotify'
 import { YtDlpPlugin } from '@distube/yt-dlp'
 import dotenv from 'dotenv'
 
-import { customPlay, toEmbed } from './utils.js'
+import { customPlay, toEmbed, trackEmbed } from './utils.js'
 import commands from './commands/index.js'
 import mongoose from 'mongoose'
 
@@ -65,23 +65,10 @@ client
 
 client.distube
   .on('addSong', (queue, song) => {
-    queue.textChannel.send(
-      toEmbed(
-        `**${song.user.tag}** added [**${song.name}**](${song.url}) to queue.`,
-        Colors.Green
-      )
-    )
+    queue.textChannel.send(trackEmbed('Added Track', song, Colors.Green))
   })
   .on('playSong', (queue, song) => {
-    queue.textChannel.send({
-      embeds: [
-        new EmbedBuilder()
-          .setDescription(
-            `Started Playing: [**${song.name}**](${song.url}) (${song.formattedDuration}) - Requested by ${song.user.tag}`
-          )
-          .setImage(song.thumbnail),
-      ],
-    })
+    queue.textChannel.send(trackEmbed('Started Playing', song))
   })
   .on('disconnect', (queue) => {
     queue.textChannel?.send(toEmbed('Leaving the Voice Channel...'))
