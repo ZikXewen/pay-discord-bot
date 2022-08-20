@@ -1,8 +1,9 @@
 import {
   SlashCommandBuilder,
+  Collection,
+  ChatInputCommandInteraction,
   SlashCommandSubcommandsOnlyBuilder,
-} from '@discordjs/builders'
-import type { Collection, CommandInteraction } from 'discord.js'
+} from 'discord.js'
 import DisTube from 'distube'
 
 declare module 'discord.js' {
@@ -24,7 +25,7 @@ export type Command = {
     | SlashCommandBuilder
     | SlashCommandSubcommandsOnlyBuilder
     | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
-  exec: (interaction: CommandInteraction) => Promise<void>
+  exec: (interaction: ChatInputCommandInteraction) => Promise<void>
 }
 
 export type MMResponse = {

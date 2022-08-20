@@ -1,6 +1,5 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import axios from 'axios'
-import { MessageEmbed } from 'discord.js'
+import { SlashCommandBuilder, EmbedBuilder, Colors } from 'discord.js'
 import { Command, MMResponse } from '../types.js'
 import { toEmbed } from '../utils.js'
 
@@ -25,7 +24,7 @@ const lyrics: Command = {
       interaction.editReply(
         toEmbed(
           'Play some songs or enter search terms for lyrics search :slight_smile:',
-          'RED'
+          Colors.Red
         )
       )
       return
@@ -43,34 +42,35 @@ const lyrics: Command = {
         interaction.editReply(
           toEmbed(
             "We couldn't find any lyrics for your query. :frowning:",
-            'RED'
+            Colors.Red
           )
         )
       } else {
         interaction.editReply({
           embeds: [
-            new MessageEmbed({
-              title: 'Lyrics Found',
-              author: {
+            new EmbedBuilder()
+              .setTitle('Lyrics Found')
+              .setAuthor({
                 name: 'Powered by Musixmatch',
                 url: 'https://www.musixmatch.com/',
-              },
-              description: track_list
-                .map(
-                  ({ track }, key) =>
-                    `${key + 1}: [**${track.track_name}** - ${
-                      track.artist_name
-                    }](${track.track_share_url})`
-                )
-                .join('\n'),
-              footer: { text: 'Follow the links for your lyrics' },
-            }),
+              })
+              .setDescription(
+                track_list
+                  .map(
+                    ({ track }, key) =>
+                      `${key + 1}: [**${track.track_name}** - ${
+                        track.artist_name
+                      }](${track.track_share_url})`
+                  )
+                  .join('\n')
+              )
+              .setFooter({ text: 'Follow the links for your lyrics' }),
           ],
         })
       }
     } catch (error) {
       interaction.editReply(
-        toEmbed(`Error Searching Lyrics. :frowning:`, 'RED')
+        toEmbed(`Error Searching Lyrics. :frowning:`, Colors.Red)
       )
     }
   },

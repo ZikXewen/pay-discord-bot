@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { Colors, SlashCommandBuilder } from 'discord.js'
 import { Command } from '../types.js'
 import { toEmbed } from '../utils.js'
 
@@ -21,7 +21,7 @@ const loop: Command = {
       interaction.client.distube.setRepeatMode(interaction, mode)
       interaction.reply(toEmbed('Repeat mode set to **' + modes[mode] + '**'))
     } else {
-      interaction.reply(toEmbed('No songs... :slight_smile:', 'RED'))
+      interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
     }
   },
 }

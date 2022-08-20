@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder } from 'discord.js'
 import { Command } from '../types'
 import Skoy from 'skoy'
 

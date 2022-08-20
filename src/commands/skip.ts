@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { Colors, SlashCommandBuilder } from 'discord.js'
 import { Command } from '../types.js'
 import { toEmbed } from '../utils.js'
 
@@ -9,7 +9,7 @@ const skip: Command = {
   exec: async (interaction) => {
     const queue = interaction.client.distube.getQueue(interaction)
     if (!queue) {
-      interaction.reply(toEmbed('No songs... :slight_smile:', 'RED'))
+      interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
       return
     }
     if (queue.songs.length > 1) interaction.client.distube.skip(interaction)

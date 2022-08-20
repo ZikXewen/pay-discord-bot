@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageEmbed } from 'discord.js'
+import { SlashCommandBuilder, EmbedBuilder, Colors } from 'discord.js'
 import { defaultFilters } from 'distube'
 import { Command } from '../types.js'
 import { toEmbed } from '../utils.js'
@@ -35,47 +34,51 @@ const filter: Command = {
       subcommand.setName('list').setDescription('List all available filters')
     ),
   exec: async (interaction) => {
-    const queue = interaction.client.distube.getQueue(interaction)
-    if (!queue)
-      return interaction.reply(
-        toEmbed('Play some songs to apply filters.', 'RED')
-      )
-
     const subcommand = interaction.options.getSubcommand()
 
+    if (subcommand === 'list') {
+      interaction.reply({
+        embeds: [
+          new EmbedBuilder().setTitle('Available Filters').setDescription(
+            Object.keys(defaultFilters)
+              .map((fil) => `- ${fil}`)
+              .join('\n')
+          ),
+        ],
+      })
+      return
+    }
+
+    const queue = interaction.client.distube.getQueue(interaction)
+
+    if (!queue) {
+      interaction.reply(
+        toEmbed('Play some songs to apply filters.', Colors.Red)
+      )
+      return
+    }
     switch (subcommand) {
       case 'off':
-        queue.setFilter(false)
-        interaction.reply(toEmbed('Turned off all filters.'))
-        break
-      case 'list':
-        interaction.reply({
-          embeds: [
-            new MessageEmbed({
-              title: 'Available Filters',
-              description: Object.keys(defaultFilters)
-                .map((fil) => `- ${fil}`)
-                .join('\n'),
-            }),
-          ],
-        })
+        queue.filters.clear()
+        interaction.reply(toEmbed('Cleared all filters.'))
         break
       case 'active':
         interaction.reply({
           embeds: [
-            new MessageEmbed({
-              title: 'Active Filters',
-              description:
-                queue.filters.length > 0
-                  ? queue.filters.map((fil) => `- ${fil}`).join('\n')
-                  : 'None.',
-            }),
+            new EmbedBuilder()
+              .setTitle('Active Filters')
+              .setDescription(
+                queue.filters.size > 0
+                  ? queue.filters.names.map((fil) => `- ${fil}`).join('\n')
+                  : 'None.'
+              ),
           ],
         })
         break
       case 'toggle': {
         const filter = interaction.options.getString('filter')
-        queue.setFilter(filter)
+        if (queue.filters.has(filter)) queue.filters.remove(filter)
+        else queue.filters.add(filter)
         interaction.reply(toEmbed(`Toggled ${filter}`))
         break
       }

@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { Colors, SlashCommandBuilder } from 'discord.js'
 import axios from 'axios'
 import { Command, HFResponse, WSResponse } from '../types.js'
 import { toEmbed } from '../utils.js'
@@ -41,7 +41,7 @@ const salim: Command = {
         )
       } catch (err) {
         interaction.editReply(
-          toEmbed('Error Salim classification request :frowning:', 'RED')
+          toEmbed('Error Salim classification request :frowning:', Colors.Red)
         )
       }
     } else {
@@ -54,7 +54,7 @@ const salim: Command = {
         interaction.editReply(data.quote.body)
       } catch (err) {
         interaction.editReply(
-          toEmbed('Error fetching Salim quotes :frowning:', 'RED')
+          toEmbed('Error fetching Salim quotes :frowning:', Colors.Red)
         )
       }
     }

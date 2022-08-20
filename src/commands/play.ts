@@ -1,7 +1,11 @@
 import { Command } from '../types.js'
-import { MessageActionRow, MessageEmbed, MessageSelectMenu } from 'discord.js'
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { isURL } from 'distube'
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ActionRowBuilder,
+  SelectMenuBuilder,
+} from 'discord.js'
+import { isURL, SearchResultType, SearchResultVideo } from 'distube'
 import { customPlay, toEmbed } from '../utils.js'
 
 const play: Command = {
@@ -22,32 +26,34 @@ const play: Command = {
       await interaction.editReply(toEmbed('Added to queue'))
       return customPlay(interaction, track)
     }
-    const results = await interaction.client.distube.search(track)
+    const results = (await interaction.client.distube.search(track, {
+      type: SearchResultType.VIDEO,
+    })) as SearchResultVideo[]
     interaction.editReply({
       embeds: [
-        new MessageEmbed({
-          title: 'Search Results',
-          description: results
-            .map(
-              ({ name, url, formattedDuration }, key) =>
-                `${key + 1}: [**${name}**](${url}) (${formattedDuration})`
-            )
-            .join('\n'),
-        }),
+        new EmbedBuilder()
+          .setTitle('Search Results')
+          .setDescription(
+            results
+              .map(
+                ({ name, url, formattedDuration }, key) =>
+                  `${key + 1}: [**${name}**](${url}) (${formattedDuration})`
+              )
+              .join('\n')
+          ),
       ],
       components: [
-        new MessageActionRow({
-          components: [
-            new MessageSelectMenu({
-              customId: 'track',
-              placeholder: 'Select Track.',
-              options: results.map(({ name, url }, key) => ({
+        new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+          new SelectMenuBuilder()
+            .setCustomId('track')
+            .setPlaceholder('Select Track.')
+            .addOptions(
+              results.map(({ name, url }, key) => ({
                 label: `${key + 1}: ${name}`.slice(0, 99),
                 value: url,
-              })),
-            }),
-          ],
-        }),
+              }))
+            )
+        ),
       ],
     })
   },

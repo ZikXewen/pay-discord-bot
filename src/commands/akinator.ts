@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder } from 'discord.js'
 import aki from 'discord.js-akinator'
 import { Command } from '../types.js'
 
@@ -7,7 +7,7 @@ const akinator: Command = {
     .setName('akinator')
     .setDescription('Start an Akinator game.'),
   exec: async (interaction) => {
-    aki(interaction, { useButtons: true, embedColor: 'GREY' })
+    aki(interaction, { useButtons: true, embedColor: '#99AAB5' })
   },
 }
 

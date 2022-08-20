@@ -1,21 +1,25 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import axios from 'axios'
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  Colors,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from 'discord.js'
 import { Agent } from 'https'
 import mongoose from 'mongoose'
 import { Command, Skin } from '../types.js'
 import { toEmbed } from '../utils.js'
 
-const AuthModel =
-  mongoose.models.Auth ||
-  mongoose.model(
-    'Auth',
-    new mongoose.Schema({
-      _id: String,
-      authCookie: String,
-      region: String,
-    })
-  )
+const AuthModel = mongoose.model(
+  'Auth',
+  new mongoose.Schema({
+    _id: String,
+    authCookie: String,
+    region: String,
+  })
+)
 
 const tiers = {
   '0cebb8be-46d7-c12a-d306-e9907bfc5a25': 'Deluxe',
@@ -179,12 +183,11 @@ const valorant: Command = {
         if (!auth) {
           interaction.editReply({
             embeds: [
-              new MessageEmbed({
-                title: 'Please login with `/valorant login` first',
-                footer: {
+              new EmbedBuilder()
+                .setTitle('Please login with `/valorant login` first')
+                .setFooter({
                   text: 'We do not and will never collect your password.',
-                },
-              }),
+                }),
             ],
           })
           break
@@ -266,18 +269,14 @@ const valorant: Command = {
           interaction.editReply({
             embeds: skins
               .filter((skin) => store.includes(skin.levels[0].uuid))
-              .map(
-                (skin) =>
-                  new MessageEmbed({
-                    author: {
-                      name: tiers[skin.contentTierUuid],
-                      iconURL: `https://media.valorant-api.com/contenttiers/${skin.contentTierUuid}/displayicon.png`,
-                    },
-                    title: skin.displayName,
-                    image: {
-                      url: skin.displayIcon || skin.levels[0].displayIcon,
-                    },
+              .map((skin) =>
+                new EmbedBuilder()
+                  .setAuthor({
+                    name: tiers[skin.contentTierUuid],
+                    iconURL: `https://media.valorant-api.com/contenttiers/${skin.contentTierUuid}/displayicon.png`,
                   })
+                  .setTitle(skin.displayName)
+                  .setImage(skin.displayIcon || skin.levels[0].displayIcon)
               ),
           })
         } catch (err) {
@@ -286,14 +285,14 @@ const valorant: Command = {
             interaction.editReply(
               toEmbed(
                 'Error fetching the shop. Service is temporarily down. :frowning:',
-                'RED'
+                Colors.Red
               )
             )
           })
           interaction.editReply(
             toEmbed(
               'Error fetching the shop. Token might have expired. Please login again :frowning:',
-              'RED'
+              Colors.Red
             )
           )
         }
@@ -303,23 +302,19 @@ const valorant: Command = {
         interaction.reply({
           ephemeral: true,
           embeds: [
-            new MessageEmbed({
-              title: 'Here is your login link.',
-              footer: {
-                text: 'We do not and will never collect your password.',
-              },
+            new EmbedBuilder().setTitle('Here is your login link.').setFooter({
+              text: 'We do not and will never collect your password.',
             }),
           ],
           components: [
-            new MessageActionRow({
-              components: [
-                new MessageButton({
-                  style: 'LINK',
-                  label: `Login (only for ${interaction.user.tag})`,
-                  url: `https://pay-discord-bot-auth-endpoint.vercel.app/?id=${interaction.user.id}`,
-                }),
-              ],
-            }),
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+              new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setLabel(`Login (only for ${interaction.user.tag})`)
+                .setURL(
+                  `https://pay-discord-bot-auth-endpoint.vercel.app/?id=${interaction.user.id}`
+                )
+            ),
           ],
         })
         break
@@ -330,7 +325,10 @@ const valorant: Command = {
           interaction.editReply(toEmbed('Unbound successfully.'))
         } catch (error) {
           interaction.editReply(
-            toEmbed('Error occurred while attempting to unbind account.', 'RED')
+            toEmbed(
+              'Error occurred while attempting to unbind account.',
+              Colors.Red
+            )
           )
           console.error(error)
         }
@@ -341,18 +339,17 @@ const valorant: Command = {
             const agent = agents[Math.floor(Math.random() * agents.length)]
             interaction.reply({
               embeds: [
-                new MessageEmbed({
-                  author: {
+                new EmbedBuilder()
+                  .setAuthor({
                     name: agent.role,
                     iconURL: `https://media.valorant-api.com/agents/roles/${
                       roles[agent.role]
                     }/displayicon.png`,
-                  },
-                  title: agent.name,
-                  image: {
-                    url: `https://media.valorant-api.com/agents/${agent.uuid}/fullportraitv2.png`,
-                  },
-                }),
+                  })
+                  .setTitle(agent.name)
+                  .setImage(
+                    `https://media.valorant-api.com/agents/${agent.uuid}/fullportraitv2.png`
+                  ),
               ],
             })
             break
@@ -361,12 +358,11 @@ const valorant: Command = {
             const map = maps[Math.floor(Math.random() * maps.length)]
             interaction.reply({
               embeds: [
-                new MessageEmbed({
-                  title: map.name,
-                  image: {
-                    url: `https://media.valorant-api.com/maps/${map.uuid}/splash.png`,
-                  },
-                }),
+                new EmbedBuilder()
+                  .setTitle(map.name)
+                  .setImage(
+                    `https://media.valorant-api.com/maps/${map.uuid}/splash.png`
+                  ),
               ],
             })
           }
