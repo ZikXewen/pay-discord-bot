@@ -1,4 +1,5 @@
 import akinator from './akinator.js'
+import avatar from './avatar.js'
 import filter from './filter.js'
 import loop from './loop.js'
 import lyrics from './lyrics.js'
@@ -14,6 +15,7 @@ import valorant from './valorant.js'
 
 export default [
   akinator,
+  avatar,
   filter,
   loop,
   lyrics,
