@@ -36,23 +36,30 @@ const avatar: Command = {
         )
     ),
   exec: async (interaction) => {
-    const user = interaction.options.getMember('user')
     try {
+      await interaction.deferReply({
+        ephemeral: interaction.options.getBoolean('ephemeral'),
+      })
+      const user = interaction.options.getMember('user')
+      const server = interaction.options.getInteger('type')
       if (!(user instanceof GuildMember)) throw new Error()
-      const image = interaction.options.getInteger('type')
+      const image = server
         ? user.avatarURL({ size: 4096 })
         : user.user.avatarURL({ size: 4096 })
       if (!image) throw new Error()
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [
           new EmbedBuilder()
-            .setTitle(`Avatar of ${user.user.tag}`)
+            .setTitle(
+              `${server ? 'Server' : 'Global'} avatar of ${user.user.tag}`
+            )
             .setImage(image),
         ],
-        ephemeral: interaction.options.getBoolean('ephemeral') || false,
       })
     } catch {
-      await interaction.reply(toEmbed('User have no such avatar.', Colors.Red))
+      await interaction.editReply(
+        toEmbed('User have no such avatar.', Colors.Red)
+      )
     }
   },
 }
