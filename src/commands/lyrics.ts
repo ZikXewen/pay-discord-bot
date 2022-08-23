@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { SlashCommandBuilder, EmbedBuilder, Colors } from 'discord.js'
-import { Command, MMResponse } from '../types.js'
+import { Command, MMResponse } from '../types'
 import { toEmbed } from '../utils.js'
 
 const lyrics: Command = {

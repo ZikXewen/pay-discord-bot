@@ -3,7 +3,6 @@ import {
   Client,
   Collection,
   Colors,
-  EmbedBuilder,
   GatewayIntentBits,
 } from 'discord.js'
 import { DisTube } from 'distube'
@@ -16,6 +15,7 @@ import commands from './commands/index.js'
 import mongoose from 'mongoose'
 
 dotenv.config()
+if (!process.env.DB_URL) throw new Error('DB_URL not found')
 
 await mongoose.connect(process.env.DB_URL)
 
@@ -40,8 +40,8 @@ commands.forEach((command) => {
 
 client
   .on('ready', () => {
-    console.log(`${client.user.tag} logged in. Ready to run!`)
-    client.user.setActivity({ type: ActivityType.Listening, name: 'itself' })
+    console.log(`${client.user?.tag} logged in. Ready to run!`)
+    client.user?.setActivity({ type: ActivityType.Listening, name: 'itself' })
   })
   .on('interactionCreate', async (interaction) => {
     if (interaction.isChatInputCommand()) {
@@ -51,7 +51,7 @@ client
         await command.exec(interaction)
       } catch (err) {
         console.error(err)
-        interaction.channel.send('Command Error')
+        interaction.channel?.send('Command Error')
       }
     } else if (interaction.isSelectMenu()) {
       if (interaction.customId === 'track') {
@@ -65,17 +65,17 @@ client
 
 client.distube
   .on('addSong', (queue, song) => {
-    queue.textChannel.send(trackEmbed('Added Track', song, Colors.Green))
+    queue.textChannel?.send(trackEmbed('Added Track', song, Colors.Green))
   })
   .on('playSong', (queue, song) => {
-    queue.textChannel.send(trackEmbed('Started Playing', song))
+    queue.textChannel?.send(trackEmbed('Started Playing', song))
   })
   .on('disconnect', (queue) => {
     queue.textChannel?.send(toEmbed('Leaving the Voice Channel...'))
   })
   .on('error', (channel, error) => {
     console.error(error)
-    channel.send(toEmbed(error.toString().slice(0, 1999), Colors.Red))
+    channel?.send(toEmbed(error.toString().slice(0, 1999), Colors.Red))
   })
 
 client.login(process.env.BOT_TOKEN)

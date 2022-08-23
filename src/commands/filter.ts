@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, Colors } from 'discord.js'
 import { defaultFilters } from 'distube'
-import { Command } from '../types.js'
+import { Command } from '../types'
 import { toEmbed } from '../utils.js'
 
 const filter: Command = {
@@ -77,6 +77,7 @@ const filter: Command = {
         break
       case 'toggle': {
         const filter = interaction.options.getString('filter')
+        if (!filter) throw new Error('Unspecified filter')
         if (queue.filters.has(filter)) queue.filters.remove(filter)
         else queue.filters.add(filter)
         interaction.reply(toEmbed(`Toggled ${filter}`))

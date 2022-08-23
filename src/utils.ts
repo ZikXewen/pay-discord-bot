@@ -8,8 +8,8 @@ import {
 } from 'discord.js'
 import { Song } from 'distube'
 
-export const toEmbed = (desc: string, color: ColorResolvable = null) => ({
-  embeds: [new EmbedBuilder().setColor(color).setDescription(desc)],
+export const toEmbed = (desc: string, color?: ColorResolvable) => ({
+  embeds: [new EmbedBuilder().setColor(color || null).setDescription(desc)],
 })
 
 export const customPlay = (
@@ -17,13 +17,14 @@ export const customPlay = (
   track: string
 ) => {
   if (
+    interaction.inGuild() &&
     interaction.member instanceof GuildMember &&
     interaction.member.voice.channel
   )
     interaction.client.distube
       .play(interaction.member.voice.channel, track, {
         member: interaction.member,
-        textChannel: interaction.channel,
+        textChannel: interaction.channel || undefined,
       })
       .catch()
   else
@@ -35,14 +36,14 @@ export const customPlay = (
 export const trackEmbed = (
   title: string,
   { name, url, formattedDuration, user, thumbnail }: Song,
-  color: ColorResolvable = null
+  color?: ColorResolvable
 ) => ({
   embeds: [
     new EmbedBuilder()
       .setTitle(title)
       .setDescription(`[**${name}**](${url}) (${formattedDuration})`)
-      .setFooter({ text: user.tag, iconURL: user.displayAvatarURL() })
-      .setImage(thumbnail)
-      .setColor(color),
+      .setFooter({ text: user?.tag || '', iconURL: user?.displayAvatarURL() })
+      .setImage(thumbnail || null)
+      .setColor(color || null),
   ],
 })

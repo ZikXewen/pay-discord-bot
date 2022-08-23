@@ -1,4 +1,4 @@
-import { Command } from '../types.js'
+import { Command } from '../types'
 import {
   SlashCommandBuilder,
   EmbedBuilder,
@@ -21,7 +21,7 @@ const play: Command = {
   exec: async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     const track = interaction.options.getString('track')
-
+    if (!track) throw new Error('Unspecified track')
     if (isURL(track)) {
       await interaction.editReply(toEmbed('Added to queue'))
       return customPlay(interaction, track)

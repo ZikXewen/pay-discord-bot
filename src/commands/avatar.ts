@@ -38,7 +38,7 @@ const avatar: Command = {
   exec: async (interaction) => {
     try {
       await interaction.deferReply({
-        ephemeral: interaction.options.getBoolean('ephemeral'),
+        ephemeral: interaction.options.getBoolean('ephemeral') || false,
       })
       const user = interaction.options.getMember('user')
       const server = interaction.options.getInteger('type')

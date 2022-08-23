@@ -1,5 +1,5 @@
 import { Colors, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { Command } from '../types.js'
+import { Command } from '../types'
 import { toEmbed } from '../utils.js'
 
 const queue: Command = {

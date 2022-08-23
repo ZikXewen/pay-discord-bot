@@ -1,5 +1,5 @@
 import { Colors, SlashCommandBuilder } from 'discord.js'
-import { Command } from '../types.js'
+import { Command } from '../types'
 import { toEmbed, trackEmbed } from '../utils.js'
 
 const nowPlaying: Command = {

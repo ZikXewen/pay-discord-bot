@@ -2,7 +2,10 @@ import { REST, Routes } from 'discord.js'
 
 import dotenv from 'dotenv'
 import commands from './commands/index.js'
+
 dotenv.config()
+if (!process.env.BOT_TOKEN) throw new Error('BOT_TOKEN not found')
+if (!process.env.BOT_ID) throw new Error('BOT_ID not found')
 
 const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN)
 

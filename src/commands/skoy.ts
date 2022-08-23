@@ -11,6 +11,7 @@ const skoy: Command = {
     ),
   exec: async (interaction) => {
     const quote = interaction.options.getString('quote')
+    if (!quote) throw new Error('Unspecified quote')
     interaction.reply(`${Skoy.convert(quote)} (${quote})`)
   },
 }

@@ -1,6 +1,6 @@
 import { Colors, SlashCommandBuilder } from 'discord.js'
 import axios from 'axios'
-import { Command, HFResponse, WSResponse } from '../types.js'
+import { Command, HFResponse, WSResponse } from '../types'
 import { toEmbed } from '../utils.js'
 
 const salim: Command = {

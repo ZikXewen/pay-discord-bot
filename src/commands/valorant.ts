@@ -9,7 +9,7 @@ import {
 } from 'discord.js'
 import { Agent } from 'https'
 import mongoose from 'mongoose'
-import { Command, Skin } from '../types.js'
+import { Command, Skin } from '../types'
 import { toEmbed } from '../utils.js'
 
 const AuthModel = mongoose.model(
@@ -21,7 +21,7 @@ const AuthModel = mongoose.model(
   })
 )
 
-const tiers = {
+const tiers: { [key: string]: string } = {
   '0cebb8be-46d7-c12a-d306-e9907bfc5a25': 'Deluxe',
   'e046854e-406c-37f4-6607-19a9ba8426fc': 'Exclusive',
   '60bca009-4182-7998-dee7-b8a2558dc369': 'Premium',
@@ -29,7 +29,7 @@ const tiers = {
   '411e4a55-4e59-7757-41f0-86a53f101bb5': 'Ultra',
 }
 
-const roles = {
+const roles: { [key: string]: string } = {
   Initiator: '5fc02f99-4091-4486-a531-98459a3e95e9',
   Duelist: 'dbe8757e-9e92-4ed4-b39f-9dfc589691d4',
   Sentinel: '5fc02f99-4091-4486-a531-98459a3e95e9',
@@ -205,7 +205,7 @@ const valorant: Command = {
             },
             {
               headers: {
-                Cookie: auth.authCookie,
+                Cookie: auth.authCookie || '',
                 'User-Agent':
                   'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows; 10;;Professional, x64)',
               },
@@ -222,7 +222,7 @@ const valorant: Command = {
             }
           )
 
-          const ssidCookie = reauth.headers['set-cookie'].find((elem) =>
+          const ssidCookie = reauth.headers['set-cookie']?.find((elem) =>
             /^ssid/.test(elem)
           )
 
@@ -230,9 +230,10 @@ const valorant: Command = {
             authCookie: ssidCookie,
           })
 
-          const access_token = new URL(
-            reauth.data.response.parameters.uri
-          ).searchParams.get('access_token')
+          const access_token =
+            new URL(reauth.data.response.parameters.uri).searchParams.get(
+              'access_token'
+            ) || ''
 
           const entitlement: string = (
             await axios.post(

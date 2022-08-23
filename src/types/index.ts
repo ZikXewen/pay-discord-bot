@@ -1,17 +1,8 @@
 import {
   SlashCommandBuilder,
-  Collection,
   ChatInputCommandInteraction,
   SlashCommandSubcommandsOnlyBuilder,
 } from 'discord.js'
-import DisTube from 'distube'
-
-declare module 'discord.js' {
-  interface Client {
-    distube: DisTube
-    commands?: Collection<string, Command>
-  }
-}
 
 export type CommandOption = {
   type: string

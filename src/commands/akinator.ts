@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js'
 import aki from 'discord.js-akinator'
-import { Command } from '../types.js'
+import { Command } from '../types'
 
 const akinator: Command = {
   data: new SlashCommandBuilder()
