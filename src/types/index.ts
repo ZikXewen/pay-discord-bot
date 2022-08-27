@@ -1,8 +1,4 @@
-import {
-  SlashCommandBuilder,
-  ChatInputCommandInteraction,
-  SlashCommandSubcommandsOnlyBuilder,
-} from 'discord.js'
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js'
 
 export type CommandOption = {
   type: string
@@ -12,10 +8,7 @@ export type CommandOption = {
 }
 
 export type Command = {
-  data:
-    | SlashCommandBuilder
-    | SlashCommandSubcommandsOnlyBuilder
-    | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
+  data: Pick<SlashCommandBuilder, 'toJSON' | 'name'>
   exec: (interaction: ChatInputCommandInteraction) => Promise<void>
 }
 
