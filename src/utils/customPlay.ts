@@ -1,16 +1,10 @@
 import {
-  ColorResolvable,
+  Colors,
   CommandInteraction,
   GuildMember,
-  EmbedBuilder,
   SelectMenuInteraction,
-  Colors,
 } from 'discord.js'
-import { Song } from 'distube'
-
-export const toEmbed = (desc: string, color?: ColorResolvable) => ({
-  embeds: [new EmbedBuilder().setColor(color || null).setDescription(desc)],
-})
+import { toEmbed } from './toEmbed.js'
 
 export const customPlay = (
   interaction: CommandInteraction | SelectMenuInteraction,
@@ -32,18 +26,3 @@ export const customPlay = (
       toEmbed('Please join a voice channel first. :slight_smile:', Colors.Red)
     )
 }
-
-export const trackEmbed = (
-  title: string,
-  { name, url, formattedDuration, user, thumbnail }: Song,
-  color?: ColorResolvable
-) => ({
-  embeds: [
-    new EmbedBuilder()
-      .setTitle(title)
-      .setDescription(`[**${name}**](${url}) (${formattedDuration})`)
-      .setFooter({ text: user?.tag || '', iconURL: user?.displayAvatarURL() })
-      .setImage(thumbnail || null)
-      .setColor(color || null),
-  ],
-})

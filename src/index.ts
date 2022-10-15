@@ -10,15 +10,20 @@ import { SpotifyPlugin } from '@distube/spotify'
 import { YtDlpPlugin } from '@distube/yt-dlp'
 import dotenv from 'dotenv'
 
-import { customPlay, toEmbed, trackEmbed } from './utils.js'
+import { customPlay } from './utils/customPlay.js'
+import { toEmbed } from './utils/toEmbed.js'
+import { trackEmbed } from './utils/trackEmbed.js'
 import commands from './commands/index.js'
 import mongoose from 'mongoose'
 
+// Load Environment Variables
 dotenv.config()
 if (!process.env.DB_URL) throw new Error('DB_URL not found')
 
+// Connect to DB
 await mongoose.connect(process.env.DB_URL)
 
+// Initialize Client
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -26,13 +31,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
   ],
 })
-client.distube = new DisTube(client, {
-  emitNewSongOnly: true,
-  leaveOnFinish: true,
-  nsfw: true,
-  plugins: [new SpotifyPlugin(), new YtDlpPlugin()],
-  youtubeCookie: process.env.COOKIE,
-})
+
 client.commands = new Collection()
 commands.forEach((command) => {
   client.commands.set(command.data.name, command)
@@ -62,6 +61,16 @@ client
       }
     }
   })
+
+// Initialize Distube
+
+client.distube = new DisTube(client, {
+  emitNewSongOnly: true,
+  leaveOnFinish: true,
+  nsfw: true,
+  plugins: [new SpotifyPlugin(), new YtDlpPlugin()],
+  youtubeCookie: process.env.COOKIE,
+})
 
 client.distube
   .on('addSong', (queue, song) => {

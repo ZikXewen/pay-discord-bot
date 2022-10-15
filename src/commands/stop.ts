@@ -1,6 +1,6 @@
 import { Colors, SlashCommandBuilder } from 'discord.js'
 import { Command } from '../types'
-import { toEmbed } from '../utils.js'
+import { toEmbed } from '../utils/toEmbed.js'
 
 const stop: Command = {
   data: new SlashCommandBuilder()

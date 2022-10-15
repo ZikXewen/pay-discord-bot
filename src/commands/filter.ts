@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder, Colors } from 'discord.js'
 import { defaultFilters } from 'distube'
 import { Command } from '../types'
-import { toEmbed } from '../utils.js'
+import { toEmbed } from '../utils/toEmbed.js'
 
 const filter: Command = {
   data: new SlashCommandBuilder()

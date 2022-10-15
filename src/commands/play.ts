@@ -6,7 +6,8 @@ import {
   SelectMenuBuilder,
 } from 'discord.js'
 import { isURL, SearchResultType, SearchResultVideo } from 'distube'
-import { customPlay, toEmbed } from '../utils.js'
+import { customPlay } from '../utils/customPlay.js'
+import { toEmbed } from '../utils/toEmbed.js'
 
 const play: Command = {
   data: new SlashCommandBuilder()

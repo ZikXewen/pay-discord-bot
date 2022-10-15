@@ -1,7 +1,18 @@
 import { Colors, SlashCommandBuilder } from 'discord.js'
 import axios from 'axios'
-import { Command, HFResponse, WSResponse } from '../types'
-import { toEmbed } from '../utils.js'
+import { Command } from '../types'
+import { toEmbed } from '../utils/toEmbed.js'
+
+type HFResponse = {
+  label: string
+  score: number
+}[][]
+
+type WSResponse = {
+  quote: {
+    body: string
+  }
+}
 
 const salim: Command = {
   data: new SlashCommandBuilder()

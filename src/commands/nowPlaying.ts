@@ -1,6 +1,7 @@
 import { Colors, SlashCommandBuilder } from 'discord.js'
 import { Command } from '../types'
-import { toEmbed, trackEmbed } from '../utils.js'
+import { toEmbed } from '../utils/toEmbed.js'
+import { trackEmbed } from '../utils/trackEmbed.js'
 
 const nowPlaying: Command = {
   data: new SlashCommandBuilder()

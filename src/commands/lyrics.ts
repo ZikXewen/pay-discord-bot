@@ -1,7 +1,19 @@
 import axios from 'axios'
 import { SlashCommandBuilder, EmbedBuilder, Colors } from 'discord.js'
-import { Command, MMResponse } from '../types'
-import { toEmbed } from '../utils.js'
+import { Command } from '../types'
+import { toEmbed } from '../utils/toEmbed.js'
+
+type Track = {
+  artist_name: string
+  track_name: string
+  track_share_url: string
+}
+
+type MMResponse = {
+  message: {
+    body: { track_list: { track: Track }[] }
+  }
+}
 
 const lyrics: Command = {
   data: new SlashCommandBuilder()

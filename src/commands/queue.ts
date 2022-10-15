@@ -1,6 +1,6 @@
 import { Colors, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import { Command } from '../types'
-import { toEmbed } from '../utils.js'
+import { toEmbed } from '../utils/toEmbed.js'
 
 const queue: Command = {
   data: new SlashCommandBuilder()
