@@ -18,7 +18,7 @@ const loop: Command = {
   exec: async (interaction) => {
     if (interaction.client.distube.getQueue(interaction)) {
       const mode = interaction.options.getInteger('mode')
-      if (!mode) throw new Error('Unspecified mode')
+      if (typeof mode !== 'number') throw new Error('Unspecified mode')
       interaction.client.distube.setRepeatMode(interaction, mode)
       interaction.reply(toEmbed('Repeat mode set to **' + modes[mode] + '**'))
     } else {
