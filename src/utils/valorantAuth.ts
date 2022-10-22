@@ -15,8 +15,7 @@ export const valorantAuth = async (authCookie: string, authId: string) => {
   const session = axios.create({
     headers: {
       Cookie: authCookie,
-      'User-Agent':
-        'RiotClient/59.0.3.4723620.4719081 rso-auth (Windows; 10;;Professional, x64)',
+      'User-Agent': `RiotClient/${process.env.RIOT_CLIENT_VERSION} rso-auth (Windows; 10;;Professional, x64)`,
     },
     httpsAgent: new Agent({
       ciphers: [
