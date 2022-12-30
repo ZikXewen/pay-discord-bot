@@ -88,3 +88,12 @@ client.distube
   })
 
 client.login(process.env.BOT_TOKEN)
+
+// Hack for Koyeb
+import http from 'http'
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' })
+    res.end('Hello World!')
+  })
+  .listen(process.env.PORT || 8000)
