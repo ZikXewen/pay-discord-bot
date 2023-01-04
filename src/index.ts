@@ -21,6 +21,7 @@ dotenv.config()
 if (!process.env.DB_URL) throw new Error('DB_URL not found')
 
 // Connect to DB
+mongoose.set('strictQuery', false)
 await mongoose.connect(process.env.DB_URL)
 
 // Initialize Client
