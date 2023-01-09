@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node-esm src/index.ts",
     "register": "ts-node-esm src/registry.ts",
-    "postinstall": "npm run register",
+    "prestart": "npm run register",
     "lint": "eslint src"
   },
   "dependencies": {

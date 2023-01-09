@@ -74,10 +74,12 @@ const salim: Command = {
               )
             )
           })
-          .catch(() =>
+          .catch((e) =>
             interaction.editReply(
               toEmbed(
-                'Error Salim classification request :frowning:',
+                e.response?.status === 503
+                  ? `Service is starting up... Try again in ${e.response?.data?.estimated_time} seconds.`
+                  : 'Error Salim classification request :frowning:',
                 Colors.Red
               )
             )
