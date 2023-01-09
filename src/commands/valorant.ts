@@ -52,7 +52,7 @@ const valorant: Command = {
         await interaction.deferReply()
         const auth = await AuthModel.findById(interaction.user.id)
         if (!auth) {
-          interaction.editReply({
+          await interaction.editReply({
             embeds: [
               new EmbedBuilder()
                 .setTitle('Please login with `/valorant login` first')
@@ -61,7 +61,7 @@ const valorant: Command = {
                 }),
             ],
           })
-          break
+          return
         }
         try {
           const { access_token, entitlement, puuid } = await valorantAuth(
@@ -79,8 +79,10 @@ const valorant: Command = {
               }
             )
           ).data.SkinsPanelLayout.SingleItemOffers
-          interaction.editReply({
-            embeds: (await getSkins(store)).map((skin) =>
+          await interaction.editReply({
+            embeds: (
+              await getSkins(store)
+            ).map((skin) =>
               new EmbedBuilder()
                 .setAuthor({
                   name: skin.tier,
@@ -92,18 +94,20 @@ const valorant: Command = {
           })
         } catch (err) {
           console.error(err)
-          await AuthModel.findByIdAndDelete(auth._id)
-          interaction.editReply(
-            toEmbed(
-              'Error fetching the shop. Token might have expired. Please login again :frowning:',
-              Colors.Red
-            )
-          )
+          await Promise.all([
+            AuthModel.findByIdAndDelete(auth._id),
+            interaction.editReply(
+              toEmbed(
+                'Error fetching the shop. Token might have expired. Please login again :frowning:',
+                Colors.Red
+              )
+            ),
+          ])
         }
         break
       }
       case 'login':
-        interaction.reply({
+        await interaction.reply({
           ephemeral: true,
           embeds: [
             new EmbedBuilder().setTitle('Here is your login link.').setFooter({
@@ -125,16 +129,18 @@ const valorant: Command = {
       case 'logout':
         await interaction.deferReply({ ephemeral: true })
         try {
-          await AuthModel.findByIdAndDelete(interaction.user.id)
-          interaction.editReply(toEmbed('Unbound successfully.'))
+          await Promise.all([
+            AuthModel.findByIdAndDelete(interaction.user.id),
+            interaction.editReply(toEmbed('Unbound successfully.')),
+          ])
         } catch (error) {
-          interaction.editReply(
+          console.error(error)
+          await interaction.editReply(
             toEmbed(
               'Error occurred while attempting to unbind account.',
               Colors.Red
             )
           )
-          console.error(error)
         }
         break
       case 'random':
@@ -142,7 +148,7 @@ const valorant: Command = {
         switch (interaction.options.getString('type')) {
           case 'agent': {
             const agent = await getRandomAgent()
-            interaction.editReply({
+            await interaction.editReply({
               embeds: [
                 new EmbedBuilder()
                   .setAuthor({
@@ -159,7 +165,7 @@ const valorant: Command = {
           }
           case 'map': {
             const map = await getRandomMap()
-            interaction.editReply({
+            await interaction.editReply({
               embeds: [
                 new EmbedBuilder()
                   .setTitle(map.name)

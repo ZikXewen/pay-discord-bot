@@ -37,7 +37,7 @@ const filter: Command = {
     const subcommand = interaction.options.getSubcommand()
 
     if (subcommand === 'list') {
-      interaction.reply({
+      await interaction.reply({
         embeds: [
           new EmbedBuilder().setTitle('Available Filters').setDescription(
             Object.keys(defaultFilters)
@@ -52,7 +52,7 @@ const filter: Command = {
     const queue = interaction.client.distube.getQueue(interaction)
 
     if (!queue) {
-      interaction.reply(
+      await interaction.reply(
         toEmbed('Play some songs to apply filters.', Colors.Red)
       )
       return
@@ -60,10 +60,10 @@ const filter: Command = {
     switch (subcommand) {
       case 'off':
         queue.filters.clear()
-        interaction.reply(toEmbed('Cleared all filters.'))
+        await interaction.reply(toEmbed('Cleared all filters.'))
         break
       case 'active':
-        interaction.reply({
+        await interaction.reply({
           embeds: [
             new EmbedBuilder()
               .setTitle('Active Filters')
@@ -80,7 +80,7 @@ const filter: Command = {
         if (!filter) throw new Error('Unspecified filter')
         if (queue.filters.has(filter)) queue.filters.remove(filter)
         else queue.filters.add(filter)
-        interaction.reply(toEmbed(`Toggled ${filter}`))
+        await interaction.reply(toEmbed(`Toggled ${filter}`))
         break
       }
     }

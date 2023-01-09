@@ -16,14 +16,16 @@ const loop: Command = {
         .addChoices(...modes.map((mode, idx) => ({ name: mode, value: idx })))
     ),
   exec: async (interaction) => {
-    if (interaction.client.distube.getQueue(interaction)) {
-      const mode = interaction.options.getInteger('mode')
-      if (typeof mode !== 'number') throw new Error('Unspecified mode')
-      interaction.client.distube.setRepeatMode(interaction, mode)
-      interaction.reply(toEmbed('Repeat mode set to **' + modes[mode] + '**'))
-    } else {
-      interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
+    const queue = interaction.client.distube.getQueue(interaction)
+    if (!queue) {
+      await interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
+      return
     }
+    const mode = interaction.options.getInteger('mode') || 0
+    queue.setRepeatMode(mode)
+    await interaction.reply(
+      toEmbed('Repeat mode set to **' + modes[mode] + '**')
+    )
   },
 }
 

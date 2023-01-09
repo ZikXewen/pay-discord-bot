@@ -3,10 +3,10 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
   ActionRowBuilder,
-  SelectMenuBuilder,
+  StringSelectMenuBuilder,
 } from 'discord.js'
-import { isURL, SearchResultType, SearchResultVideo } from 'distube'
-import { customPlay } from '../utils/customPlay.js'
+import { isURL, SearchResultType } from 'distube'
+import { addTrack } from '../utils/addTrack.js'
 import { toEmbed } from '../utils/toEmbed.js'
 
 const play: Command = {
@@ -24,13 +24,16 @@ const play: Command = {
     const track = interaction.options.getString('track')
     if (!track) throw new Error('Unspecified track')
     if (isURL(track)) {
-      await interaction.editReply(toEmbed('Added to queue'))
-      return customPlay(interaction, track)
+      await Promise.all([
+        interaction.editReply(toEmbed('Added to queue')),
+        addTrack(interaction, track),
+      ])
+      return
     }
-    const results = (await interaction.client.distube.search(track, {
+    const results = await interaction.client.distube.search(track, {
       type: SearchResultType.VIDEO,
-    })) as SearchResultVideo[]
-    interaction.editReply({
+    })
+    await interaction.editReply({
       embeds: [
         new EmbedBuilder()
           .setTitle('Search Results')
@@ -44,8 +47,8 @@ const play: Command = {
           ),
       ],
       components: [
-        new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-          new SelectMenuBuilder()
+        new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+          new StringSelectMenuBuilder()
             .setCustomId('track')
             .setPlaceholder('Select Track.')
             .addOptions(

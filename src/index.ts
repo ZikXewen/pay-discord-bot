@@ -10,7 +10,7 @@ import { SpotifyPlugin } from '@distube/spotify'
 import { YtDlpPlugin } from '@distube/yt-dlp'
 import dotenv from 'dotenv'
 
-import { customPlay } from './utils/customPlay.js'
+import { addTrack } from './utils/addTrack.js'
 import { toEmbed } from './utils/toEmbed.js'
 import { trackEmbed } from './utils/trackEmbed.js'
 import commands from './commands/index.js'
@@ -47,19 +47,23 @@ client
     if (interaction.isChatInputCommand()) {
       const command = client.commands.get(interaction.commandName)
       if (!command) return
-      try {
-        await command.exec(interaction)
-      } catch (err) {
+      await command.exec(interaction).catch(async (err) => {
         console.error(err)
-        interaction.channel?.send('Command Error')
-      }
-    } else if (interaction.isSelectMenu()) {
-      if (interaction.customId === 'track') {
-        await interaction.update({
-          components: [],
-        })
-        customPlay(interaction, interaction.values[0])
-      }
+        if (interaction.replied)
+          await interaction
+            .followUp(toEmbed('Command Error', Colors.Red))
+            .catch()
+        else
+          await interaction.reply(toEmbed('Command Error', Colors.Red)).catch()
+      })
+    } else if (
+      interaction.isStringSelectMenu() &&
+      interaction.customId === 'track'
+    ) {
+      await Promise.all([
+        interaction.update({ components: [] }).catch(),
+        addTrack(interaction, interaction.values[0]),
+      ])
     }
   })
 

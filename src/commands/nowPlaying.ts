@@ -9,13 +9,11 @@ const nowPlaying: Command = {
     .setDescription('Get the name of the current track.'),
   exec: async (interaction) => {
     const queue = interaction.client.distube.getQueue(interaction)
-    if (!queue) {
-      interaction.reply(
-        toEmbed('No song is playing... :slight_smile:', Colors.Red)
-      )
-      return
-    }
-    interaction.reply(trackEmbed('Now Playing', queue.songs[0]))
+    await interaction.reply(
+      queue
+        ? trackEmbed('Now Playing', queue.songs[0])
+        : toEmbed('No song is playing... :slight_smile:', Colors.Red)
+    )
   },
 }
 

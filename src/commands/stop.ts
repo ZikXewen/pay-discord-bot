@@ -10,10 +10,11 @@ const stop: Command = {
     const queue = interaction.client.distube.getQueue(interaction)
     if (!queue)
       interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
-    else {
-      interaction.client.distube.stop(interaction)
-      interaction.reply(toEmbed('Removing all tracks...'))
-    }
+    else
+      await Promise.all([
+        interaction.reply(toEmbed('Removing all tracks...')),
+        queue.stop(),
+      ])
   },
 }
 

@@ -8,13 +8,15 @@ const skip: Command = {
     .setDescription('Skip current track.'),
   exec: async (interaction) => {
     const queue = interaction.client.distube.getQueue(interaction)
-    if (!queue) {
-      interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
-      return
-    }
-    if (queue.songs.length > 1) interaction.client.distube.skip(interaction)
-    else interaction.client.distube.stop(interaction)
-    interaction.reply(toEmbed('Skipping current track...'))
+    if (queue)
+      await Promise.all([
+        interaction.reply(toEmbed('Skipping current track...')),
+        queue.songs.length > 1
+          ? interaction.client.distube.skip(interaction)
+          : interaction.client.distube.stop(interaction),
+      ])
+    else
+      await interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
   },
 }
 

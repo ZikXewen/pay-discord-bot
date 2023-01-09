@@ -64,7 +64,8 @@ const salim: Command = {
             }
           )
           .then((res) => {
-            const score = res.data[0][1].score * 100
+            const score =
+              (res.data[0].find((d) => d.label[0] === 'H')?.score || 0) * 100
             interaction.editReply(
               toEmbed(
                 `"${quote}" is ${score.toFixed(2)}% Salim. ${

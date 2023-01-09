@@ -9,9 +9,9 @@ const queue: Command = {
   exec: async (interaction) => {
     const queue = interaction.client.distube.getQueue(interaction)
     if (!queue)
-      interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
+      await interaction.reply(toEmbed('No songs... :slight_smile:', Colors.Red))
     else
-      interaction.reply({
+      await interaction.reply({
         embeds: [
           new EmbedBuilder().setTitle('Current Queue').setDescription(
             queue.songs

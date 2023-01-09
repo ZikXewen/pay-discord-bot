@@ -15,9 +15,10 @@ const roll: Command = {
   exec: async (interaction) => {
     const min = interaction.options.getInteger('min') || 1
     const max = interaction.options.getInteger('max') || 6
-    if (min > max) interaction.reply(toEmbed('Invalid Range!', Colors.Red))
+    if (min > max)
+      await interaction.reply(toEmbed('Invalid Range!', Colors.Red))
     else
-      interaction.reply({
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(

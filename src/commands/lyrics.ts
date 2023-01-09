@@ -33,7 +33,7 @@ const lyrics: Command = {
       interaction.options.getString('name') ||
       interaction.client.distube.getQueue(interaction)?.songs[0].name
     if (!track) {
-      interaction.editReply(
+      await interaction.editReply(
         toEmbed(
           'Play some songs or enter search terms for lyrics search :slight_smile:',
           Colors.Red
@@ -50,15 +50,15 @@ const lyrics: Command = {
         )
       ).data
       const track_list = response.message.body.track_list
-      if (!track_list[0]) {
-        interaction.editReply(
+      if (!track_list[0])
+        await interaction.editReply(
           toEmbed(
             "We couldn't find any lyrics for your query. :frowning:",
             Colors.Red
           )
         )
-      } else {
-        interaction.editReply({
+      else
+        await interaction.editReply({
           embeds: [
             new EmbedBuilder()
               .setTitle('Lyrics Found')
@@ -79,9 +79,8 @@ const lyrics: Command = {
               .setFooter({ text: 'Follow the links for your lyrics' }),
           ],
         })
-      }
     } catch (error) {
-      interaction.editReply(
+      await interaction.editReply(
         toEmbed(`Error Searching Lyrics. :frowning:`, Colors.Red)
       )
     }
